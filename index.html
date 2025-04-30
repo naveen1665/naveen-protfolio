@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="./user.svg" />
+    <title>Naveenram C E</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS */
+        :root {
+            --primary: #6C63FF;
+            --secondary: #FF6584;
+            --dark: #2D3748;
+            --light: #F7FAFC;
+        }
+        
+        body {
+            scroll-behavior: smooth;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Animation classes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+        
+        /* Card hover effects */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.2);
+        }
+        
+        .project-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.25);
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        /* Navbar animation */
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Blob background */
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(45deg, rgba(108, 99, 255, 0.1), rgba(255, 101, 132, 0.1));
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            filter: blur(30px);
+            z-index: 0;
+        }
+        
+        .blob-1 {
+            top: -100px;
+            right: -100px;
+        }
+        
+        .blob-2 {
+            bottom: -100px;
+            left: -100px;
+        }
+        
+        /* Modal styles */
+        .modal {
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        /* Tech stack icons */
+        .tech-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .tech-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        /* PDF Viewer */
+        .pdf-viewer {
+            height: 800px;
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .pdf-container {
+            position: relative;
+            padding-bottom: 125%; /* Aspect ratio for A4 */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .pdf-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0">
+                    <a href="#home" class="text-2xl font-bold gradient-text">Portfolio</a>
+                </div>
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#home" class="nav-link text-gray-700 hover:text-purple-600 transition font-medium">Home</a>
+                    <a href="#about" class="nav-link text-gray-700 hover:text-purple-600 transition font-medium">About</a>
+                    <a href="#achievements" class="nav-link text-gray-700 hover:text-purple-600 transition font-medium">Achievements</a>
+                    <a href="#projects" class="nav-link text-gray-700 hover:text-purple-600 transition font-medium">Projects</a>
+                    <a href="#tech-stack" class="nav-link text-gray-700 hover:text-purple-600 transition font-medium">Tech Stack</a>
+                    <a href="#contact" class="nav-link text-gray-700 hover:text-purple-600 transition font-medium">Contact</a>
+                    <a href="#resume" class="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transition">Resume</a>
+                </div>
+                <div class="lg:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-purple-600 focus:outline-none">
+                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white shadow-lg">
+            <div class="px-6 py-4 space-y-4">
+                <a href="#home" class="block nav-link text-gray-700 hover:text-purple-600 transition font-medium">Home</a>
+                <a href="#about" class="block nav-link text-gray-700 hover:text-purple-600 transition font-medium">About</a>
+                <a href="#achievements" class="block nav-link text-gray-700 hover:text-purple-600 transition font-medium">Achievements</a>
+                <a href="#projects" class="block nav-link text-gray-700 hover:text-purple-600 transition font-medium">Projects</a>
+                <a href="#tech-stack" class="block nav-link text-gray-700 hover:text-purple-600 transition font-medium">Tech Stack</a>
+                <a href="#contact" class="block nav-link text-gray-700 hover:text-purple-600 transition font-medium">Contact</a>
+                <a href="#resume" class="block bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transition text-center">Resume</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="min-h-screen pt-20 flex items-center relative overflow-hidden">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-center justify-between">
+            <div class="lg:w-1/2 mb-12 lg:mb-0 fade-in">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                    Hi, I'm <span class="gradient-text">Naveenram C E</span>
+                </h1>
+                <h2 class="text-2xl md:text-3xl text-gray-600 mb-8">
+                    Full Stack Developer
+                </h2>
+                <p class="text-lg text-gray-600 mb-8 max-w-lg">
+                    I build exceptional digital experiences with modern technologies. 
+                    Passionate about creating efficient, scalable, and user-friendly applications.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#projects" class="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-8 py-3 rounded-full font-medium hover:shadow-lg transition">
+                        View Projects
+                    </a>
+                    <a href="#contact" class="border-2 border-purple-600 text-purple-600 px-8 py-3 rounded-full font-medium hover:bg-purple-50 transition">
+                        Contact Me
+                    </a>
+                </div>
+            </div>
+            
+            <div class="lg:w-1/2 flex justify-center fade-in delay-1">
+                <div class="relative">
+                    <div class="w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 p-1">
+                        <img src="./naveen.jpg" alt="Profile Image" class="w-full h-full rounded-full object-cover border-4 border-white">
+                    </div>
+                    <div class="absolute -bottom-4 -right-4 bg-white p-4 rounded-full shadow-lg">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-code text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 fade-in">
+                <span class="gradient-text">About Me</span>
+            </h2>
+            
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/3 fade-in">
+                    <div>
+                        <img src="./about.png" alt="About Image" class="w-full h-auto rounded-2xl">
+                    </div>
+                </div>
+                
+                <div class="lg:w-2/3 fade-in delay-1">
+                    <h3 class="text-2xl font-bold mb-6">Who am I?</h3>
+                    <p class="text-gray-600 mb-6">
+                        I’m a Full Stack & AI Developer where I can build scalable web applications and
+                        use AI to create smart, efficient solutions. I aim to solve real-world problems
+                        through technology and grow by collaborating with innovative, results-driven
+                        teams.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-graduation-cap text-purple-600"></i>
+                                </div>
+                                <h4 class="font-bold">Education</h4>
+                            </div>
+                            <p class="text-gray-600">
+                                Bachelor's Degree in Arificial Intelligence and Data Science<br>
+                                Kongu Engineering college, Perundurai
+                            </p>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-briefcase text-pink-600"></i>
+                                </div>
+                                <h4 class="font-bold">Experience</h4>
+                            </div>
+                            <p class="text-gray-600">
+                                Completed Internship at SystimaNX<br>
+                                Duration : 4 Month
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#resume" class="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transition">
+                            View Resume
+                        </a>
+                        <a href="#contact" class="border-2 border-purple-600 text-purple-600 px-6 py-2 rounded-full font-medium hover:bg-purple-50 transition">
+                            Hire Me
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section id="achievements" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 fade-in">
+                <span class="gradient-text">My Achievements</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Achievement 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition card-hover fade-in">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-trophy text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Best Project Award</h3>
+                    <p class="text-gray-600 mb-4">
+                        Finalist in the Software Category Project at RubyDay, held at the college level.                
+                        </p>
+                    <p class="text-sm text-purple-600">Year: 2025</p>
+                </div>
+                
+                <!-- Achievement 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition card-hover fade-in delay-1">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-medal text-pink-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">LeetCode Achievement</h3>
+                    <p class="text-gray-600 mb-4">
+                        Solved over 200 problems on LeetCode and earned the 50 Days Badge in 2024 and 2025.
+                    </p>
+                    <p class="text-sm text-pink-600">Years: 2024, 2025</p>
+                </div>
+                
+                <!-- Achievement 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition card-hover fade-in delay-2">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-star text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Active NSS Volunteer</h3>
+                    <p class="text-gray-600 mb-4">
+                        Attended a 7-day NSS camp and contributed to community service activities.</p>
+                    <p class="text-sm text-indigo-600">Year: 2023</p>
+                    
+                </div>
+            </div>
+            
+            <!-- Certifications -->
+            <h3 class="text-2xl font-bold text-center mt-20 mb-12 fade-in">Certifications</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Certification 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition card-hover fade-in">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="md:w-1/3 cursor-pointer" onclick="openModal('cert1')">
+                            <img src="https://images.credly.com/images/61f56aa4-16fd-403c-90bc-1d90dba1fa99/twitter_thumb_201604_image.png" alt="Certification 1" class="w-full h-auto rounded-lg hover:opacity-90 transition">
+                        </div>
+                        <div class="md:w-2/3">
+                            <h3 class="text-xl font-bold mb-2">Microsoft Azure AI 102 </h3>
+                            <p class="text-gray-600 mb-3">Issued by: Microsoft University</p>
+                            <p class="text-gray-600 mb-4">
+                                Certification focused on designing and implementing AI solutions using Microsoft Azure services, including natural language processing and machine learning.
+                            </p>
+                            <p class="text-sm text-purple-600">Completed: Jan 2025</p>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!-- Certification 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition card-hover fade-in delay-1">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="md:w-1/3 cursor-pointer" onclick="openModal('cert2')">
+                            <img src="https://images.credly.com/images/6e32758f-6beb-44e5-ae9e-3ac8046f6290/image.png" alt="MongoDB Associate Developer" class="w-full h-auto rounded-lg hover:opacity-90 transition">
+                        </div>
+                        <div class="md:w-2/3">
+                            <h3 class="text-xl font-bold mb-2">MongoDB Associate Developer</h3>
+                            <p class="text-gray-600 mb-3">Issued by: MongoDB University</p>
+                            <p class="text-gray-600 mb-4">
+                                Certification focused on core MongoDB development skills, including CRUD operations, aggregation pipelines, schema design, and performance tuning.
+                            </p>
+                            <p class="text-sm text-pink-600">Completed: Feb 2025</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 fade-in">
+                <span class="gradient-text">My Projects</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Project 1 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md project-card transition fade-in">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://media.licdn.com/dms/image/v2/D5612AQFpETFA7MqLtA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1661506666349?e=2147483647&v=beta&t=JryNXKwqWYQJhikGl58ikacPXXLJ4uu_JBKbdyw0CiA" alt="Hand Gesture Media Controller" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Hand Gesture Media Controller</h3>
+                        <p class="text-gray-600 mb-4">
+                            A real-time gesture recognition system to control media playback using hand movements with OpenCV and MediaPipe.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">Python</span>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full">OpenCV</span>
+                            <span class="bg-gray-100 text-gray-800 text-xs px-3 py-1 rounded-full">MediaPipe</span>
+                        </div>
+                        <div class="flex space-x-4">
+                            <a href="https://github.com/naveen-166/Hand-Gesture-Media-controller.git" target="_blank" class="text-purple-600 hover:text-purple-800 transition">
+                                <i class="fab fa-github mr-1"></i> Code
+                            </a>
+                            <a href="https://drive.google.com/file/d/1kVPWZ8KHlJvwp9KBKpKrCPq2WZv_qa6h/view?usp=drive_link" class="text-pink-600 hover:text-pink-800 transition" target="_blank">
+                                <i class="fas fa-external-link-alt mr-1"></i> Preview
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md project-card transition fade-in">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://www.malwarebytes.com/wp-content/uploads/sites/2/2015/11/photodune-6673197-spam-email-m-965x395-1.jpg" alt="Spam Email Detection" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Spam Email Detection</h3>
+                        <p class="text-gray-600 mb-4">
+                            A web app that uses logistic regression to classify emails as spam or not, built with a React frontend and Python backend.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full">React</span>
+                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Python</span>
+                            <span class="bg-red-100 text-red-800 text-xs px-3 py-1 rounded-full">Logistic Regression</span>
+                        </div>
+                        <div class="flex space-x-4">
+                            <a href="https://github.com/naveen-166/Spam-Email-detection-React-.git" target="_blank" class="text-purple-600 hover:text-purple-800 transition">
+                                <i class="fab fa-github mr-1"></i> Code
+                            </a>
+                            <a href="https://spam-email-detection-react-2.onrender.com/" target="_blank" class="text-pink-600 hover:text-pink-800 transition">
+                                <i class="fas fa-external-link-alt mr-1"></i> Live Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!-- Project 3 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md project-card transition fade-in">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://www.horilla.com/wp-content/uploads/2024/08/how-does-horilla-hrms-software-streamline-resume-shortlisting.jpg" alt="Resume Shortlister" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Resume Shortlister</h3>
+                        <p class="text-gray-600 mb-4">
+                            A MERN stack application that parses and ranks resumes based on job descriptions using keyword relevance and scoring.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">MongoDB</span>
+                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Express</span>
+                            <span class="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full">React</span>
+                            <span class="bg-gray-100 text-gray-800 text-xs px-3 py-1 rounded-full">Node.js</span>
+                        </div>
+                        <div class="flex space-x-4">
+                            <a href="https://github.com/naveen-166/Resume-shortlister-particles" target="_blank" class="text-purple-600 hover:text-purple-800 transition">
+                                <i class="fab fa-github mr-1"></i> Code
+                            </a>
+                            <a href="https://resume-omega-taupe.vercel.app/login" target="_blank" class="text-pink-600 hover:text-pink-800 transition">
+                                <i class="fas fa-external-link-alt mr-1"></i> Live Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!-- Project 4 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md project-card transition fade-in">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://almablog-media.s3.ap-south-1.amazonaws.com/MERN_Stack_9437df2ba9_62af1dd3fc.png" alt="External Vendor Project" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">MERN Project for External Vendor</h3>
+                        <p class="text-gray-600 mb-4">
+                            A custom MERN stack application developed for an external vendor to streamline their business operations and enhance their online presence.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">MongoDB</span>
+                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Express</span>
+                            <span class="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full">React</span>
+                            <span class="bg-gray-100 text-gray-800 text-xs px-3 py-1 rounded-full">Node.js</span>
+                        </div>
+                        <div class="flex space-x-4">
+                            <a href="https://github.com/naveen-166/Kumaran_steels.git" target="_blank" class="text-purple-600 hover:text-purple-800 transition">
+                                <i class="fab fa-github mr-1"></i> Code
+                            </a>
+                            <a href="#"  class="text-pink-600 hover:text-pink-800 transition">
+                                <i class="fas fa-external-link-alt mr-1"></i> Live Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech-stack" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 fade-in">
+                <span class="gradient-text">Tech Stack</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Programming Languages -->
+                <div class="bg-white p-8 rounded-xl shadow-md fade-in">
+                    <h3 class="text-xl font-bold mb-6 text-center">
+                        <i class="fas fa-code mr-2 text-purple-600"></i> Programming Languages
+                    </h3>
+                    <div class="grid grid-cols-2 gap-6">
+                      <div class="flex flex-col items-center tech-icon">
+                          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java" class="w-16 h-16 mb-2">
+                          <span class="text-gray-700">Java</span>
+                        </div>
+                        <div class="flex flex-col items-center tech-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" alt="C" class="w-16 h-16 mb-2">
+                            <span class="text-gray-700">C</span>
+                        </div>
+                        <div class="flex flex-col items-center tech-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="w-16 h-16 mb-2">
+                            <span class="text-gray-700">Python</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Frontend Technologies -->
+                <div class="bg-white p-8 rounded-xl shadow-md fade-in delay-1">
+                    <h3 class="text-xl font-bold mb-6 text-center">
+                        <i class="fas fa-paint-brush mr-2 text-pink-600"></i> Frontend
+                    </h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="flex flex-col items-center tech-icon">
+                          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML" class="w-16 h-16 mb-2">
+                          <span class="text-gray-700">HTML</span>
+                        </div>
+                        <div class="flex flex-col items-center tech-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" class="w-16 h-16 mb-2">
+                            <span class="text-gray-700">React</span>
+                        </div>
+                        <div class="flex flex-col items-center tech-icon">
+                          <img src="https://static-00.iconduck.com/assets.00/tailwind-css-icon-2048x1229-u8dzt4uh.png" alt="Tailwind CSS" class="w-16 h-16 mb-2">
+                          <span class="text-gray-700">Tailwind CSS</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Backend & DevOps -->
+                <div class="bg-white p-8 rounded-xl shadow-md fade-in delay-2">
+                    <h3 class="text-xl font-bold mb-6 text-center">
+                        <i class="fas fa-server mr-2 text-indigo-600"></i> Backend & DevOps
+                    </h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="flex flex-col items-center tech-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" class="w-16 h-16 mb-2">
+                            <span class="text-gray-700">Node.js</span>
+                        </div>
+                        <div class="flex flex-col items-center tech-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express" class="w-16 h-16 mb-2">
+                            <span class="text-gray-700">Express</span>
+                        </div>
+                        <div class="flex flex-col items-center tech-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB" class="w-16 h-16 mb-2">
+                            <span class="text-gray-700">MongoDB</span>
+                        </div>
+                        <div class="flex flex-col items-center tech-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" class="w-16 h-16 mb-2">
+                            <span class="text-gray-700">GitHub</span>
+                        </div>
+                        <div class="flex flex-col items-center tech-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" alt="Postman" class="w-16 h-16 mb-2">
+                            <span class="text-gray-700">Postman</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resume Section -->
+    <section id="resume" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 fade-in">
+                <span class="gradient-text">My Resume</span>
+            </h2>
+    
+            <div class="bg-gray-50 rounded-xl p-8 shadow-md fade-in">
+                <div class="flex flex-col items-center">
+                    <h3 class="text-2xl font-bold mb-6">View or Download My Resume</h3>
+    
+                    <!-- Replaced preview with a simple CTA box -->
+                    <div class="w-full mb-8 bg-white border border-dashed border-purple-300 rounded-lg p-6 text-center">
+                        <p class="text-gray-700 text-lg font-medium">
+                            To explore my professional experience and skills in detail,
+                            download the full resume below.
+                        </p>
+                    </div>
+    
+                    <!-- Download Button -->
+                    <a href="https://drive.google.com/file/d/1SSlRZjTxi-e2iZ1lK3kGTzOEXbT39-64/view?usp=drive_link" target="_blank" class="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-8 py-3 rounded-full font-medium hover:shadow-lg transition inline-flex items-center">
+                        <i class="fas fa-download mr-2"></i> Download Resume
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 fade-in">
+                <span class="gradient-text">Get In Touch</span>
+            </h2>
+            
+            <div class="flex flex-col lg:flex-row gap-12">
+                <div class="lg:w-1/2 fade-in">
+                    <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+                    <p class="text-gray-600 mb-8">
+                        Feel free to reach out to me for any questions or opportunities. 
+                        I'm always open to discussing new projects, creative ideas or opportunities to be part of your vision.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-envelope text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Email</h4>
+                                <a href="mailto:naveensrn1935@gmail.com" class="text-gray-600 hover:text-purple-600 transition">naveensrn1935@gmail.com</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fab fa-github text-pink-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">GitHub</h4>
+                                <a href="https://github.com/naveen-166" target="_blank" class="text-gray-600 hover:text-pink-600 transition">github.com/naveen-166</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fab fa-linkedin-in text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">LinkedIn</h4>
+                                <a href="https://www.linkedin.com/in/naveen166/" target="_blank" class="text-gray-600 hover:text-blue-600 transition">linkedin.com/in/naveen166/</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 fade-in delay-1">
+                    <form class="bg-white p-8 rounded-xl shadow-md">
+                        <div class="mb-6">
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Your Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Your Email</label>
+                            <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="subject" class="block text-gray-700 font-medium mb-2">Subject</label>
+                            <input type="text" id="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+                            <textarea id="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <!-- <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <a href="#home" class="text-2xl font-bold gradient-text">Portfolio</a>
+                    <p class="text-gray-400 mt-2">© 2023 Your Name. All rights reserved.</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition">
+                        <i class="fab fa-linkedin-in text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-pink-400 transition">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer> -->
+
+    <!-- Certificate Modals -->
+    <div id="cert1-modal" class="modal fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div class="modal-content bg-white rounded-xl max-w-4xl w-full max-h-screen overflow-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Full Stack Web Development Certification</h3>
+                    <button onclick="closeModal('cert1')" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <img src="https://via.placeholder.com/800x600" alt="Certification 1" class="w-full h-auto rounded-lg">
+            </div>
+        </div>
+    </div>
+    
+    <div id="cert2-modal" class="modal fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div class="modal-content bg-white rounded-xl max-w-4xl w-full max-h-screen overflow-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Cloud Computing Fundamentals Certification</h3>
+                    <button onclick="closeModal('cert2')" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <img src="https://via.placeholder.com/800x600" alt="Certification 2" class="w-full h-auto rounded-lg">
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        const mobileLinks = document.querySelectorAll('#mobile-menu a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // Certificate modal functions
+        function openModal(certId) {
+            const modal = document.getElementById(`${certId}-modal`);
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(certId) {
+            const modal = document.getElementById(`${certId}-modal`);
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    const certId = modal.id.split('-')[0];
+                    closeModal(certId);
+                }
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const headerHeight = document.querySelector('nav').offsetHeight;
+                    const targetPosition = targetElement.offsetTop - headerHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Highlight active navigation link
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                const headerHeight = document.querySelector('nav').offsetHeight;
+                
+                if (pageYOffset >= (sectionTop - headerHeight - 50)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
